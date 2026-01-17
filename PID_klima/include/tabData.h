@@ -12,8 +12,8 @@
 
 struct tablica
 {
-	uint8_t bStart;
-	uint8_t bStop;
+	// uint8_t bStart;
+	// uint8_t bStop;
 	float ds[2];
 	uint8_t outPWM; 
 	uint8_t out;

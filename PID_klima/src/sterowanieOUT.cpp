@@ -10,7 +10,7 @@
 #include "Arduino.h"
 #include "main.h"
 
-// pwm dla grzałek
+// piny wyjść
 const int out_pin = 4;
 const int outPWM_pin = 5;
 

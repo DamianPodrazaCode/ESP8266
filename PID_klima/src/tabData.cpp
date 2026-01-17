@@ -9,8 +9,8 @@
 
 tabData::tabData()
 {
-	data.bStart = 1;
-	data.bStop = 1;
+	// data.bStart = 1;
+	// data.bStop = 1;
 	data.out = 1; 
 	data.outPWM = 50;
 

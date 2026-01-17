@@ -14,7 +14,7 @@
 
 /////////////////////////////////////////////////////////////
 const uint8_t ledIO = 2;
-tabData glTablica; // główna tablica stanów i danych
+tabData glTablica; // objekt - główna tablica stanów i danych
 
 /////////////////////////////////////////////////////////////
 void softTimer1Update(uint32_t delayTime = 1000);
@@ -31,14 +31,14 @@ void setup()
 }
 
 /////////////////////////////////////////////////////////////
-uint32_t debugTime = 0;
+static uint32_t debugTime = 0; // zmienna tylko w tym pliku
 void loop()
 {
   debugTime = millis();
   // ------------------------------------------------------------------------------------------------
-  softTimer1Update(100); // led
-  softTimer2Update(200); // temperatury
-  updateOUT(); // aktualizacja wyjść (out, putPWM)
+  softTimer1Update(100);       // led
+  softTimer2Update(200);       // temperatury
+  updateOUT();                 // aktualizacja wyjść (out, putPWM)
   softTimerSerialUpdate(1000); // Serial wysyłanie
 
   // ------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ void loop()
 }
 
 /////////////////////////////////////////////////////////////
-void inline softTimer1Proc()
+void inline softTimer1Proc() // led
 {
   digitalWrite(ledIO, !digitalRead(ledIO));
   // Serial.println("led blink");
@@ -66,7 +66,7 @@ void softTimer1Update(uint32_t delayTime)
 /////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////
-void inline softTimer2Proc()
+void inline softTimer2Proc() // temperatury
 {
   updateNextTemperatureSensor();
 }
@@ -83,7 +83,7 @@ void softTimer2Update(uint32_t delayTime)
 /////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////
-void inline softTimerSerialProc()
+void inline softTimerSerialProc() // Serial wysyłanie
 {
   // Serial.println("softTimerSerialUpdate");
   // writeSerialData();
