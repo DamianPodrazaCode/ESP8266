@@ -1,7 +1,16 @@
+/*
+ * sterowanieOUT.cpp
+ *
+ *  Created on: 17 sty 2026
+ *      Author: ZoMbiE
+ *
+ */
+
 #include <Arduino.h>
 #include "main.h"
 #include "ds18b20.h"
 #include "tabData.h"
+#include "sterowanieOUT.h"
 
 /////////////////////////////////////////////////////////////
 const uint8_t ledIO = 2;
@@ -11,12 +20,14 @@ tabData glTablica; // główna tablica stanów i danych
 void softTimer1Update(uint32_t delayTime = 1000);
 void softTimer2Update(uint32_t delayTime = 1000);
 void softTimerSerialUpdate(uint32_t delayTime = 1000);
+
 /////////////////////////////////////////////////////////////
 void setup()
 {
   Serial.begin(115200);
   pinMode(ledIO, OUTPUT);
   initTemperatureSensor();
+  initOUT();
 }
 
 /////////////////////////////////////////////////////////////
@@ -27,7 +38,7 @@ void loop()
   // ------------------------------------------------------------------------------------------------
   softTimer1Update(100); // led
   softTimer2Update(200); // temperatury
-
+  updateOUT(); // aktualizacja wyjść (out, putPWM)
   softTimerSerialUpdate(1000); // Serial wysyłanie
 
   // ------------------------------------------------------------------------------------------------
@@ -79,6 +90,7 @@ void inline softTimerSerialProc()
   Serial.print(glTablica.data.ds[0]);
   Serial.print(" ");
   Serial.println(glTablica.data.ds[1]);
+  Serial.println(glTablica.data.timeDelay);
 }
 
 void softTimerSerialUpdate(uint32_t delayTime)

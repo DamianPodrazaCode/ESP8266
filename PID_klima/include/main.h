@@ -1,7 +1,7 @@
 /*
  * loop.h
  *
- *  Created on: 12 gru 2020
+ *  Created on: 17 sty 2026
  *      Author: ZoMbiE
  */
 

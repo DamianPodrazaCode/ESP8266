@@ -1,7 +1,7 @@
 /*
  * ds18b20.h
  *
- *  Created on: 30 lis 2020
+ *  Created on: 17 sty 2026
  *      Author: ZoMbiE
  */
 
