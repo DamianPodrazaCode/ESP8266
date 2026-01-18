@@ -17,6 +17,7 @@ const uint8_t ledIO = 2;
 tabData glTablica; // objekt - główna tablica stanów i danych
 
 /////////////////////////////////////////////////////////////
+// soft timer'y
 void softTimer1Update(uint32_t delayTime = 1000);
 void softTimer2Update(uint32_t delayTime = 1000);
 void softTimerSerialUpdate(uint32_t delayTime = 1000);

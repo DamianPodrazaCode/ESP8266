@@ -14,6 +14,7 @@
 const int out_pin = 4;
 const int outPWM_pin = 5;
 
+// inicjalizacja wyjść
 void initOUT()
 {
 	// init dla out i outPWM
@@ -22,6 +23,7 @@ void initOUT()
 	analogWrite(outPWM_pin, 0);
 }
 
+// aktualizacja wyjść
 void updateOUT()
 {
 	digitalWrite(out_pin, glTablica.data.out);
