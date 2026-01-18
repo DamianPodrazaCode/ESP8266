@@ -35,6 +35,9 @@ void apConfig()
     server.on("/", handleRoot);   // Strona główna
     server.on("/on", handleOn);   // Włącz LED
     server.on("/off", handleOff); // Wyłącz LED
+    server.on("/relayon", handleRelayOn);   // Obsługa włączenia przekaźnika
+    server.on("/relayoff", handleRelayOff); // Obsługa wyłączenia przekaźnika
+    server.on("/pwm", handlePWM); // Obsługa PWM
 
     // Uruchomienie serwera
     server.begin();
@@ -44,7 +47,7 @@ void apConfig()
 // Obsługa strony głównej
 void handleRoot()
 {
-    // Strona główna z przyciskami do sterowania LED
+    // Strona główna z przyciskami do sterowania LED oraz obsługa pwm przy pomocy suwaka    
     String html = "<!DOCTYPE html><html>";                                                
     html += "<meta charset='UTF-8'>";                                                     
     html += "<head><meta name='viewport' content='width=device-width, initial-scale=1'>"; 
@@ -56,9 +59,22 @@ void handleRoot()
     html += "</style></head>";                                                        
     html += "<body>";
     html += "<h1>Sterowanie ESP8266</h1>"; 
+    // Wyświetlenie statusu LED
     html += "<p>Status LED: " + String(digitalRead(ledPin) ? "OFF" : "ON") + "</p>";  
+    // Przyciski do sterowania LED
     html += "<p><a href=\"/on\"><button class=\"button\">WŁĄCZ LED</button></a></p>"; 
     html += "<p><a href=\"/off\"><button class=\"button button2\">WYŁĄCZ LED</button></a></p>";
+    // sterowanie przekaźnikiem
+    html += "<p><a href=\"/relayon\"><button class=\"button\">WŁĄCZ PRZEKAŹNIK</button></a></p>";
+    html += "<p><a href=\"/relayoff\"><button class=\"button button2\">WYŁĄCZ PRZEKAŹNIK</button></a></p>"; 
+    // Suwak do sterowania PWM
+    html += "<h2>Sterowanie PWM</h2>";
+    html += "<form action=\"/pwm\" method=\"get\">";
+    html += "<input type=\"range\" name=\"value\" min=\"0\" max=\"1023\" value=\"0\" oninput=\"this.nextElementSibling.value = this.value\">";
+    html += "<output>0</output>";       
+    html += "<br><br><input type=\"submit\" value=\"Ustaw PWM\">";
+    html += "</form>";
+
     html += "<p>Adres IP: " + ipStr + "</p>"; 
     html += "<p>Połącz się z WiFi: " + String(ssid) + "</p>"; 
     html += "</body></html>"; 
@@ -78,6 +94,33 @@ void handleOn()
 void handleOff()
 {
     digitalWrite(ledPin, HIGH); // Wyłącz LED
+    server.sendHeader("Location", "/");
+    server.send(303);
+}
+
+//  obsługa prtzekaźnika
+void handleRelayOn()
+{
+    digitalWrite(relayPin, HIGH); // Włącz przekaźnik
+    server.sendHeader("Location", "/");
+    server.send(303);
+}       
+
+//  obsługa prtzekaźnika
+void handleRelayOff()
+{
+    digitalWrite(relayPin, LOW); // Wyłącz przekaźnik
+    server.sendHeader("Location", "/");
+    server.send(303);
+}
+
+void handlePWM()    
+{
+    if (server.hasArg("value")) {
+        int pwmValue = server.arg("value").toInt();
+        pwmValue = constrain(pwmValue, 0, 1023); // Ograniczenie wartości do zakresu 0-1023
+        analogWrite(pwmPin, pwmValue); // Ustawienie wartości PWM
+    }
     server.sendHeader("Location", "/");
     server.send(303);
 }
