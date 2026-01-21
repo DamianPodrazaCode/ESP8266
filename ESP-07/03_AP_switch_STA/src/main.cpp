@@ -115,8 +115,7 @@ void loop()
   }
   webServer.handleClient();
 
-  // Odczytuj temperatury co 5 sekund
-  if (millis() - lastTempRead > 2000)
+  if (millis() - lastTempRead > 1000)
   {
     readTemperatures();
     lastTempRead = millis();

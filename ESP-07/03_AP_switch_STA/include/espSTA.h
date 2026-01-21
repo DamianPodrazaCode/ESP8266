@@ -8,3 +8,5 @@ void handleRoot();       // Strona główna sterowania
 void handleTemps();      // Pobranie temperatur w formacie JSON 
 void handleLED(String state); // Włącz/Wyłącz LED
 void handleReset();      // Reset konfiguracji WiFi
+void startControlServer(); // Uruchom serwer sterowania
+

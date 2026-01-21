@@ -1,12 +1,12 @@
 #include "espAP.h"
 
 ESP8266WebServer webServer(80); // Serwer WWW współny dla STA i AP
+DNSServer dnsServer;
 
 // AP (Captive Portal)
 const char *AP_SSID = "ESP8266_Setup";
 const char *AP_PASSWORD = "config123";
 const byte DNS_PORT = 53;
-DNSServer dnsServer;
 
 const char *CONFIG_PAGE = R"rawliteral(
 <!DOCTYPE html>

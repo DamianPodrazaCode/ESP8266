@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-
+#include <EEPROM.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ArduinoJson.h>
@@ -15,6 +15,14 @@
 #include "espAP.h"
 #include "espSTA.h"
 
+// Struktura konfiguracji WiFi
+struct WiFiConfig
+{
+    char ssid[32];
+    char password[64];
+    bool configured;
+};
+
 extern const int LED_PIN;  // GPIO2 - wbudowana dioda
 extern const int PWM_PIN;  // GPIO5 - wyjście PWM
 extern const int DS1_PIN;  // GPIO14 - DS18B20 #1
@@ -24,4 +32,5 @@ extern bool ledState;      // Stan LED (true = włączony, false = wyłączony)
 extern float temp1, temp2; // Odczytane temperatury
 
 extern WiFiConfig savedConfig;         // Globalna zmienna przechowująca konfigurację WiFi
-extern ESP8266WebServer webServer(80); // Serwer WWW współny dla STA i AP
+extern ESP8266WebServer webServer; // Serwer WWW współny dla STA i AP
+extern DNSServer dnsServer;            // Serwer DNS dla Captive Portalu

@@ -77,7 +77,7 @@ const char *CONTROL_PAGE = R"rawliteral(
       
       // Rozpocznij odświeżanie temperatur
       updateTemperatures();
-      setInterval(updateTemperatures, 5000);
+      setInterval(updateTemperatures, 1000);
     }
 
     function controlLED(action) {
@@ -207,68 +207,81 @@ void handleGetLED()
 // Strona główna sterowania
 void handleRoot()
 {
-  String page = CONTROL_PAGE;
-  page.replace("%STA_IP%", WiFi.localIP().toString());
-  page.replace("%STA_SSID%", WiFi.SSID());
-  webServer.send(200, "text/html; charset=UTF-8", page);
+    String page = CONTROL_PAGE;
+    page.replace("%STA_IP%", WiFi.localIP().toString());
+    page.replace("%STA_SSID%", WiFi.SSID());
+    webServer.send(200, "text/html; charset=UTF-8", page);
 }
 
 // Pobranie temperatur w formacie JSON
 void handleTemps()
 {
-  StaticJsonDocument<200> doc;
-  doc["temp1"] = temp1;
-  doc["temp2"] = temp2;
+    StaticJsonDocument<200> doc;
+    doc["temp1"] = temp1;
+    doc["temp2"] = temp2;
 
-  String json;
-  serializeJson(doc, json);
-  webServer.send(200, "application/json", json);
+    String json;
+    serializeJson(doc, json);
+    webServer.send(200, "application/json", json);
 }
 
 // Włącz/Wyłącz LED
 void handleLED(String state)
 {
-  ledState = (state == "on");
-  digitalWrite(LED_PIN, ledState ? LOW : HIGH); // LOW = ON dla wbudowanej LED
-  webServer.send(200, "text/plain", "LED: " + String(ledState ? "WŁĄCZONA" : "WYŁĄCZONA"));
+    ledState = (state == "on");
+    digitalWrite(LED_PIN, ledState ? LOW : HIGH); // LOW = ON dla wbudowanej LED
+    webServer.send(200, "text/plain", "LED: " + String(ledState ? "WŁĄCZONA" : "WYŁĄCZONA"));
 }
 
 // Reset konfiguracji WiFi
 void handleReset()
 {
-  // Wyczyść konfigurację
-  savedConfig.configured = false;
-  saveConfig();
+    // Wyczyść konfigurację
+    savedConfig.configured = false;
+    saveConfig();
 
-  webServer.send(200, "text/html",
-                 "<h1>Konfiguracja zresetowana</h1><p>Restartuję w tryb konfiguracji...</p>"
-                 "<script>setTimeout(() => location.href='http://'+location.hostname, 3000)</script>");
+    webServer.send(200, "text/html",
+                   "<h1>Konfiguracja zresetowana</h1><p>Restartuję w tryb konfiguracji...</p>"
+                   "<script>setTimeout(() => location.href='http://'+location.hostname, 3000)</script>");
 
-  delay(1000);
-  ESP.restart();
+    delay(1000);
+    ESP.restart();
 }
 
 // Uruchom serwer sterowania
 void startControlServer()
 {
-  // Konfiguracja serwera sterowania
-  webServer.on("/", handleRoot);
-  webServer.on("/on", []()
-               {
+    // Ustaw endpointy
+
+    // Strona główna
+    webServer.on("/", handleRoot);
+
+    // Sterowanie LED
+    webServer.on("/on", []()
+                 {
     digitalWrite(LED_PIN, LOW);
     webServer.send(200, "text/plain", "LED: WŁĄCZONA"); });
-  webServer.on("/off", []()
-               {
+
+    // Sterowanie LED
+    webServer.on("/off", []()
+                 {
     digitalWrite(LED_PIN, HIGH);
     webServer.send(200, "text/plain", "LED: WYŁĄCZONA"); });
 
-  // NOWE: Endpointy do obsługi PWM
-  webServer.on("/pwm", handlePWM);
-  webServer.on("/getpwm", handleGetPWM);
-  webServer.on("/getled", handleGetLED);
-  webServer.on("/temps", handleTemps); // Nowy endpoint
-  webServer.on("/reset", handleReset);
-  webServer.onNotFound(handleNotFound);
-  webServer.begin();
-  Serial.println("Serwer sterowania z PWM i DS -> uruchomiony");
+    // PWM
+    webServer.on("/pwm", handlePWM);
+    // Pobranie wartości PWM
+    webServer.on("/getpwm", handleGetPWM);
+    // Pobranie stanu LED
+    webServer.on("/getled", handleGetLED);
+    // Pobranie temperatur
+    webServer.on("/temps", handleTemps);
+    // Reset konfiguracji
+    webServer.on("/reset", handleReset);
+    // Obsługa nieznanych żądań
+    webServer.onNotFound(handleNotFound);
+
+    // Uruchom serwer
+    webServer.begin();
+    Serial.println("Serwer sterowania z PWM i DS -> uruchomiony");
 }
