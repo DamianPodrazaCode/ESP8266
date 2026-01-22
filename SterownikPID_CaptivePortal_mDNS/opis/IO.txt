@@ -1,0 +1,31 @@
+Jak zrobić fizycznie wyjście na ESP8266 z opto izolacjią PC817:
+1. ESP8266 wysyła sygnał PWM częstotliwości 18kHz, za opto izolacją ma być ten sam PWM tylko na napięciu 5V lub 12V.
+2. ESP8266 steruje przekaźnikiem cewka 5V, oczywiście ta cewka ma być za optoizolatorem, w tym częstotliwość jest nie istotna bo przekaźnik jest przełaczany raz na godzinę.
+Narysuj mi schematy.  
+
+                           +5V lub +12V
+                                │
+                                │
+                           R3 = 1kΩ
+                                │
+                                ├─────────────────► PWM OUT
+                                │
+                             C ─┘
+                             │
+                    BC337    │    (Q2)
+                             │
+                          B ─┤◄────────[4.7kΩ]────┐
+                             │                    │
+                          E ─┘                    │
+                             │                    │
+    ESP8266                  │               C ───┘
+    GPIO (PWM)               │               │
+       │                     │     BC337     │    (Q1)
+       │                     │               │
+       └────────[1kΩ]────────┼──────────► B ─┤
+                             │               │
+                             │            E ─┘
+                             │               │
+                            ─┴───────────────┴─
+                            GND (wspólne)
+                            ═══
